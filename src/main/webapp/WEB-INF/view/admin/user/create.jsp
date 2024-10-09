@@ -23,7 +23,7 @@
                             <h3>Create a user</h3>
                             <hr />
                             <!-- Form login -->
-                            <form:form method="post" action="/admin/user/create1" modelAttribute="newUser">
+                            <form:form method="post" action="/admin/user/create" modelAttribute="newUser">
                                 <div class="mb-3">
                                     <label for="exampleInputEmail1" class="form-label">Email address</label>
                                     <form:input type="email" class="form-control" aria-describedby="emailHelp"
