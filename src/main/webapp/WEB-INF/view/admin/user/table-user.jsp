@@ -47,9 +47,12 @@
                                             <td>${user.email}</td>
                                             <td>${user.fullName}</td>
                                             <td>
-                                                <a class="btn btn-success" href="/admin/user/${user.id}">View</a>
-                                                <a class="btn btn-warning  mx-2">Update</a>
-                                                <a class="btn btn-danger">Delete</button>
+                                                <a class="btn btn-success"
+                                                    href="/admin/user/user-detail/${user.id}">View</a>
+                                                <a class="btn btn-warning  mx-2"
+                                                    href="/admin/user/update-user/${user.id}">Update</a>
+                                                <a class="btn btn-danger"
+                                                    href="/admin/user/delete-user/${user.id}">Delete</button>
                                             </td>
                                             <!-- <td style="text-align: center">${weather[3]}℃</td> -->
                                         </tr>

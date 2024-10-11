@@ -26,29 +26,20 @@
                     <div class="row">
                         <div class="col-12 mx-auto">
                             <div class="d-flex justify-content-between">
-                                <h3>User detail: ${id}</h3>
-                                <a href="/admin/user/create" class="btn btn-primary">Create a user</a>
+                                <h3>Delete the user with id=${id}</h3>
                             </div>
-
+                            <div class="alert alert-danger" role="alert">
+                                Are you sure to delete this user?
+                            </div>
                             <hr />
-                            <div class="card" style="width: 60%;">
-                                <div class="card-header">
-                                    User Information
+
+                            <form:form method="post" action="/admin/user/delete-user" modelAttribute="users_detail">
+                                <div class="mb-3" style="display: none;">
+                                    <label for="exampleInputPassword1" class="form-label">Id</label>
+                                    <form:input value="${id}" type="text" class="form-control" path="id" />
                                 </div>
-                                <ul class="list-group list-group-flush">
-
-                                    <li class="list-group-item">ID: ${users_detail.id}</li>
-                                    <li class="list-group-item">Full Name: ${users_detail.fullName}</li>
-                                    <li class="list-group-item">Email: ${users_detail.email}</li>
-                                    <li class="list-group-item">Address: ${users_detail.address}</li>
-                                    <li class="list-group-item">Phone: ${users_detail.phone}</li>
-
-
-                                </ul>
-
-                            </div>
-                            <a href="/admin/user" class="btn btn-success mt-3">Back</a>
-
+                                <button class="btn btn-danger mt-3">Confirm</button>
+                            </form:form>
                         </div>
 
                     </div>
