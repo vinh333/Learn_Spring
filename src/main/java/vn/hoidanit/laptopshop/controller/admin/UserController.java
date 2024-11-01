@@ -2,13 +2,11 @@ package vn.hoidanit.laptopshop.controller.admin;
 
 import java.util.List;
 
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.service.UploadService;
 import vn.hoidanit.laptopshop.service.UserService;
@@ -20,125 +18,95 @@ public class UserController {
     private final UploadService uploadService;
     private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserService userService, UploadService uploadService,
+    public UserController(
+            UploadService uploadService,
+            UserService userService,
             PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.uploadService = uploadService;
         this.passwordEncoder = passwordEncoder;
     }
 
-    // Home Page
     @RequestMapping("/")
     public String getHomePage(Model model) {
-        List<User> arrUsers = this.userService.getAllUsersByEmail("admin@gmail.com");
+        List<User> arrUsers = this.userService.getAllUsersByEmail("1@gmail.com");
         System.out.println(arrUsers);
 
         model.addAttribute("eric", "test");
+        model.addAttribute("hoidanit", "from controller with model");
         return "hello";
     }
 
-    // Page list user
     @RequestMapping("/admin/user")
     public String getUserPage(Model model) {
         List<User> users = this.userService.getAllUsers();
-        // System.out.println(">>> Check list users:" + users);
         model.addAttribute("users1", users);
-        return "admin/user/table-user";
+        return "admin/user/show";
     }
 
-    // Page info user
-    @RequestMapping("/admin/user/user-detail/{id}")
+    @RequestMapping("/admin/user/{id}")
     public String getUserDetailPage(Model model, @PathVariable long id) {
-
-        // System.out.println(">>> Check id:" + id);
-        // post id to view
+        User user = this.userService.getUserById(id);
+        model.addAttribute("user", user);
         model.addAttribute("id", id);
-        // post detail user by id -> view
-        User users_detail = this.userService.getUsersByID(id);
-        System.out.println(">>>>>>check users_detail:" + users_detail);
-        model.addAttribute("users_detail", users_detail);
-
-        return "admin/user/user-detail";
+        return "admin/user/detail";
     }
 
-    @GetMapping("/admin/user/create")
+    @GetMapping("/admin/user/create") // GET
     public String getCreateUserPage(Model model) {
         model.addAttribute("newUser", new User());
         return "admin/user/create";
     }
 
-    @RequestMapping(value = "/admin/user/create")
+    @PostMapping(value = "/admin/user/create")
     public String createUserPage(Model model,
             @ModelAttribute("newUser") User hoidanit,
             @RequestParam("hoidanitFile") MultipartFile file) {
+
         String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
         String hashPassword = this.passwordEncoder.encode(hoidanit.getPassword());
+
         hoidanit.setAvatar(avatar);
         hoidanit.setPassword(hashPassword);
         hoidanit.setRole(this.userService.getRoleByName(hoidanit.getRole().getName()));
+        // save
         this.userService.handleSaveUser(hoidanit);
         return "redirect:/admin/user";
     }
 
-    // Page update user
-    @RequestMapping("/admin/user/update-user/{id}")
-    public String getUserUpdatePage(Model model, @PathVariable long id) {
-        // post id to view
-        model.addAttribute("id", id);
-        // post detail user by id -> view
-        User currentUser = this.userService.getUsersByID(id);
-        model.addAttribute("users_detail", currentUser);
-        return "admin/user/update-user";
+    @RequestMapping("/admin/user/update/{id}") // GET
+    public String getUpdateUserPage(Model model, @PathVariable long id) {
+        User currentUser = this.userService.getUserById(id);
+        model.addAttribute("newUser", currentUser);
+        return "admin/user/update";
     }
 
-    @PostMapping(value = "/admin/user/update-user")
-    public String postUpdateUser(Model model, @ModelAttribute("users_detail") User user) {
-        User currentUser = this.userService.getUsersByID(user.getId());
+    @PostMapping("/admin/user/update")
+    public String postUpdateUser(Model model, @ModelAttribute("newUser") User hoidanit) {
+        User currentUser = this.userService.getUserById(hoidanit.getId());
         if (currentUser != null) {
-            currentUser.setAddress(user.getAddress());
-            currentUser.setFullName(user.getFullName());
-            currentUser.setPhone(user.getPhone());
+            currentUser.setAddress(hoidanit.getAddress());
+            currentUser.setFullName(hoidanit.getFullName());
+            currentUser.setPhone(hoidanit.getPhone());
+
+            // bug here
             this.userService.handleSaveUser(currentUser);
         }
         return "redirect:/admin/user";
     }
 
-    // Page delete user
-    @RequestMapping("/admin/user/delete-user/{id}")
-    public String getUserDeletePage(Model model, @PathVariable long id) {
-        // post id to view
+    @GetMapping("/admin/user/delete/{id}")
+    public String getDeleteUserPage(Model model, @PathVariable long id) {
         model.addAttribute("id", id);
-        // post detail user by id -> view
-        User currentUser = this.userService.getUsersByID(id);
-        model.addAttribute("users_detail", currentUser);
-        return "admin/user/delete-user";
+        // User user = new User();
+        // user.setId(id);
+        model.addAttribute("newUser", new User());
+        return "admin/user/delete";
     }
 
-    @PostMapping(value = "/admin/user/delete-user")
-    public String postDeleteUser(Model model, @ModelAttribute("users_detail") User user) {
-        // User currentUser = this.userService.getUsersByID(user.getId());
-        // this.userService.handleSaveUser(hoidanit);
-        if (user != null) {
-            // currentUser.setAddress(user.getAddress());
-            // currentUser.setFullName(user.getFullName());
-            // currentUser.setPhone(user.getPhone());
-            this.userService.deleteUsersByID(user.getId());
-        }
-        System.out.println("check here" + user);
+    @PostMapping("/admin/user/delete")
+    public String postDeleteUser(Model model, @ModelAttribute("newUser") User eric) {
+        this.userService.deleteAUser(eric.getId());
         return "redirect:/admin/user";
     }
 }
-
-// @RestController
-// public class UserController {
-// private UserService userService;
-
-// public UserController(UserService userService) {
-// this.userService = userService;
-// }
-
-// @GetMapping("/")
-// public String getHomePage() {
-// return this.userService.handleHello();
-// }
-// }

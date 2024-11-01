@@ -11,11 +11,11 @@ import vn.hoidanit.laptopshop.repository.UserRepository;
 
 @Service
 public class UserService {
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
 
-    public UserService(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository,
+            RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
     }
@@ -25,22 +25,25 @@ public class UserService {
     }
 
     public List<User> getAllUsersByEmail(String email) {
-        return this.userRepository.findByEmail(email);
-    }
-
-    public User getUsersByID(long id) {
-        return this.userRepository.findById(id);
+        return this.userRepository.findOneByEmail(email);
     }
 
     public User handleSaveUser(User user) {
-        return this.userRepository.save(user);
+        User eric = this.userRepository.save(user);
+        System.out.println(eric);
+        return eric;
     }
 
-    public void deleteUsersByID(long id) {
+    public User getUserById(long id) {
+        return this.userRepository.findById(id);
+    }
+
+    public void deleteAUser(long id) {
         this.userRepository.deleteById(id);
     }
 
     public Role getRoleByName(String name) {
         return this.roleRepository.findByName(name);
     }
+
 }

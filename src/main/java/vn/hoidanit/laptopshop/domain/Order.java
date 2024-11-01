@@ -2,8 +2,6 @@ package vn.hoidanit.laptopshop.domain;
 
 import java.util.List;
 
-import org.hibernate.annotations.ManyToAny;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,11 +20,11 @@ public class Order {
 
     private double totalPrice;
 
+    // user id
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
-    // Order -> OderDetail
     @OneToMany(mappedBy = "order")
     List<OrderDetail> orderDetails;
 

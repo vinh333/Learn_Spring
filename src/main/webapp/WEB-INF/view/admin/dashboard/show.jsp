@@ -1,6 +1,5 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
     <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
         <!DOCTYPE html>
         <html lang="en">
 
@@ -17,10 +16,8 @@
         </head>
 
         <body class="sb-nav-fixed">
-            <!-- header -->
             <jsp:include page="../layout/header.jsp" />
             <div id="layoutSidenav">
-                <!-- sidebar -->
                 <jsp:include page="../layout/sidebar.jsp" />
                 <div id="layoutSidenav_content">
                     <main>
@@ -579,7 +576,6 @@
                             </div>
                         </div>
                     </main>
-                    <!-- footer -->
                     <jsp:include page="../layout/footer.jsp" />
                 </div>
             </div>

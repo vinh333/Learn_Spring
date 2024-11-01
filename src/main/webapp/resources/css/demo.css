@@ -1,1 +1,4 @@
-button {}
+button {
+    background-color: red;
+    color: aqua;
+}

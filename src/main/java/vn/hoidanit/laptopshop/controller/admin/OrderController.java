@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class OrderController {
+
     @GetMapping("/admin/order")
-    public String getOrder() {
+    public String getDashboard() {
         return "admin/order/show";
     }
 }
