@@ -63,11 +63,11 @@
                                                             <td>${user.fullName}</td>
                                                             <td>
                                                                 <a class="btn btn-success"
-                                                                    href="/admin/user/user-detail/${user.id}">View</a>
+                                                                    href="/admin/user/user-detail/${user.id}">View1</a>
                                                                 <a class="btn btn-warning  mx-2"
-                                                                    href="/admin/user/update-user/${user.id}">Update</a>
+                                                                    href="/admin/user/update-user/${user.id}">Update1</a>
                                                                 <a class="btn btn-danger"
-                                                                    href="/admin/user/delete-user/${user.id}">Delete</button>
+                                                                    href="/admin/user/delete-user/${user.id}">Delete11</button>
                                                             </td>
                                                             <!-- <td style="text-align: center">${weather[3]}℃</td> -->
                                                         </tr>
