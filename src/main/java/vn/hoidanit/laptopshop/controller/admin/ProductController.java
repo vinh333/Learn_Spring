@@ -70,7 +70,7 @@ public class ProductController {
         }
 
         //
-        String avatar = this.uploadService.handleSaveUploadFile(file, "avatar");
+        String avatar = this.uploadService.handleSaveUploadFile(file, "product");
 
         hoidanit.setImage(avatar);
         // save
@@ -85,21 +85,37 @@ public class ProductController {
         return "admin/product/update";
     }
 
-    // @PostMapping("/admin/product/update")
-    // public String postUpdateProduct(Model model, @ModelAttribute("newProduct")
-    // Product hoidanit) {
-    // Product currentProduct =
-    // this.productService.getProductById(hoidanit.getId());
-    // if (currentProduct != null) {
-    // currentProduct.setAddress(hoidanit.getAddress());
-    // currentProduct.setFullName(hoidanit.getFullName());
-    // currentProduct.setPhone(hoidanit.getPhone());
+    @PostMapping("/admin/product/update")
+    public String handleUpdateProduct(@ModelAttribute("newProduct") @Valid Product pr,
+            BindingResult newProductBindingResult,
+            @RequestParam("hoidanitFile") MultipartFile file) {
 
-    // // bug here
-    // this.productService.handleSaveProduct(currentProduct);
-    // }
-    // return "redirect:/admin/product";
-    // }
+        // validate
+        if (newProductBindingResult.hasErrors()) {
+            return "admin/product/update";
+        }
+
+        Product currentProduct = this.productService.getProductById(pr.getId());
+        if (currentProduct != null) {
+            // update new image
+            if (!file.isEmpty()) {
+                String img = this.uploadService.handleSaveUploadFile(file, "product");
+                currentProduct.setImage(img);
+            }
+
+            currentProduct.setName(pr.getName());
+            currentProduct.setPrice(pr.getPrice());
+            currentProduct.setQuantity(pr.getQuantity());
+            currentProduct.setDetailDesc(pr.getDetailDesc());
+            currentProduct.setShortDesc(pr.getShortDesc());
+            currentProduct.setFactory(pr.getFactory());
+            currentProduct.setTarget(pr.getTarget());
+
+            this.productService.handleSaveProduct(currentProduct);
+        }
+
+        return "redirect:/admin/product";
+    }
 
     @GetMapping("/admin/product/delete/{id}")
     public String getDeleteProductPage(Model model, @PathVariable long id) {
