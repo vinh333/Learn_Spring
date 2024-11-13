@@ -57,7 +57,7 @@ public class HomePageController {
         }
         // validate
         if (newUserBindingResult.hasErrors()) {
-            return "client/user/create";
+            return "client/auth/register";
         }
 
         User user = this.userService.registerDTOtoUser(registerDTO);
