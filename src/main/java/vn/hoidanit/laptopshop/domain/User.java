@@ -12,11 +12,8 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
-import vn.hoidanit.laptopshop.service.validator.StrongPassword;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "users")
@@ -30,7 +27,6 @@ public class User {
     private String email;
 
     @NotNull
-    @StrongPassword(message = "Password phải dài 8 ký tự và kết hợp chữ hoa, chữ thường, số, ký tự đặc biệt.\r\n")
     @Size(min = 2, message = "Password phải có tối thiểu 2 ký tự")
     private String password;
 
@@ -50,7 +46,7 @@ public class User {
     private Role role;
 
     @OneToMany(mappedBy = "user")
-    List<Order> orders;
+    private List<Order> orders;
 
     @OneToOne(mappedBy = "user")
     private Cart cart;

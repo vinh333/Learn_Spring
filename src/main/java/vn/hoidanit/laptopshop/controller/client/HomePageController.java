@@ -6,13 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import vn.hoidanit.laptopshop.domain.Product;
 import vn.hoidanit.laptopshop.domain.User;
@@ -37,11 +34,9 @@ public class HomePageController {
     }
 
     @GetMapping("/")
-    public String getHomePage(Model model, HttpServletRequest request) {
-        List<Product> products = this.productService.getAllProducts();
+    public String getHomePage(Model model) {
+        List<Product> products = this.productService.fetchProducts();
         model.addAttribute("products", products);
-        HttpSession session = request.getSession(false);
-
         return "client/homepage/show";
     }
 
@@ -52,15 +47,12 @@ public class HomePageController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@ModelAttribute("registerUser") @Valid RegisterDTO registerDTO,
-            BindingResult newUserBindingResult) {
+    public String handleRegister(
+            @ModelAttribute("registerUser") @Valid RegisterDTO registerDTO,
+            BindingResult bindingResult) {
 
-        List<FieldError> errors = newUserBindingResult.getFieldErrors();
-        for (FieldError error : errors) {
-            System.out.println(">>>>" + error.getField() + " - " + error.getDefaultMessage());
-        }
         // validate
-        if (newUserBindingResult.hasErrors()) {
+        if (bindingResult.hasErrors()) {
             return "client/auth/register";
         }
 
@@ -82,8 +74,8 @@ public class HomePageController {
         return "client/auth/login";
     }
 
-    @GetMapping("/accessDenied")
-    public String getAccessDeniedPage(Model model) {
+    @GetMapping("/access-deny")
+    public String getDenyPage(Model model) {
 
         return "client/auth/deny";
     }

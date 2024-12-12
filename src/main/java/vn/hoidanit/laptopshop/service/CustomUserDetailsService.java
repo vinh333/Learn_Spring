@@ -7,8 +7,11 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class CustomUserDetailsService implements UserDetailsService {
+
     private final UserService userService;
 
     public CustomUserDetailsService(UserService userService) {
@@ -17,15 +20,16 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        // logic tra ve userdetails
-        vn.hoidanit.laptopshop.domain.User user = this.userService.gerUserByEmail(username);
+        vn.hoidanit.laptopshop.domain.User user = this.userService.getUserByEmail(username);
         if (user == null) {
             throw new UsernameNotFoundException("user not found");
         }
+
         return new User(
                 user.getEmail(),
                 user.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().getName())));
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+
     }
 
 }
