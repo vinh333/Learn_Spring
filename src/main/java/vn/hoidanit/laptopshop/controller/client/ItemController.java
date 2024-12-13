@@ -1,14 +1,20 @@
 package vn.hoidanit.laptopshop.controller.client;
 
+import java.util.List;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import vn.hoidanit.laptopshop.domain.Cart;
+import vn.hoidanit.laptopshop.domain.CartDetail;
 import vn.hoidanit.laptopshop.domain.Product;
+import vn.hoidanit.laptopshop.domain.User;
 import vn.hoidanit.laptopshop.service.ProductService;
 
 @Controller
@@ -40,9 +46,28 @@ public class ItemController {
         return "redirect:/";
     }
 
-    @GetMapping("/cart")
-    public String getCartPage(Model model) {
-        return "client/cart/show";
+    @RequestMapping("/cart")
+    public String getCartPage(Model model, HttpServletRequest request) {
+        // tao user gan id
+        User currentUser = new User();
+        HttpSession session = request.getSession(false);
+        currentUser.setId((long) session.getAttribute("id"));
 
+        // Lay ra cart
+        Cart cart = this.productService.fetchCartByUser(currentUser);
+        // tim list cart detail
+        List<CartDetail> cartDetails = cart.getCartDetails();
+        // tinh tong tien
+        double totalPrice = 0;
+        for (CartDetail cd : cartDetails) {
+            totalPrice += cd.getPrice() * cd.getQuantity();
+
+        }
+
+        // truyen qua show
+        model.addAttribute("cartDetails", cartDetails);
+        model.addAttribute("totalPrice", totalPrice);
+
+        return "client/cart/show";
     }
 }
