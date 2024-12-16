@@ -69,10 +69,17 @@ public class ItemController {
         return "client/cart/show";
     }
 
-    // @PostMapping("/delete-cart-product/{cartDetail.id}")
-    // public String postDeleteCart(Model model, @ModelAttribute("newUser") User
-    // eric) {
-    // this.userService.deleteUser(eric.getId());
-    // return "redirect:/admin/user";
-    // }
+    @PostMapping("/delete-cart-product/{id}")
+    public String postDeleteCart(@PathVariable long id, HttpServletRequest request) {
+
+        // Tìm cart-detail theo id (id từ view gửi lên)
+        HttpSession session = request.getSession(false);
+        long cartDetailId = id;
+
+        // Từ cart-detail này, lấy ra đối tượng cart (giỏ hàng) tương ứng
+        this.productService.handleRemoveCartDetail(cartDetailId, session);
+
+        return "redirect:/cart";
+
+    }
 }
