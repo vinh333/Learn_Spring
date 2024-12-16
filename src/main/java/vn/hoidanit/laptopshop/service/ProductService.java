@@ -53,6 +53,10 @@ public class ProductService {
         return this.cartRepository.findByUser(user);
     }
 
+    public Cart fetchByUser(User user) {
+        return this.cartRepository.findByUser(user);
+    }
+
     public void handleAddProductToCart(String email, long productId, HttpSession session) {
 
         User user = this.userService.getUserByEmail(email);

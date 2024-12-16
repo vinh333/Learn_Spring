@@ -1,13 +1,14 @@
 package vn.hoidanit.laptopshop.controller.client;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -46,28 +47,32 @@ public class ItemController {
         return "redirect:/";
     }
 
-    @RequestMapping("/cart")
+    @GetMapping("/cart")
     public String getCartPage(Model model, HttpServletRequest request) {
-        // tao user gan id
-        User currentUser = new User();
+        User currentUser = new User();// null
         HttpSession session = request.getSession(false);
-        currentUser.setId((long) session.getAttribute("id"));
+        long id = (long) session.getAttribute("id");
+        currentUser.setId(id);
 
-        // Lay ra cart
-        Cart cart = this.productService.fetchCartByUser(currentUser);
-        // tim list cart detail
-        List<CartDetail> cartDetails = cart.getCartDetails();
-        // tinh tong tien
+        Cart cart = this.productService.fetchByUser(currentUser);
+
+        List<CartDetail> cartDetails = cart == null ? new ArrayList<CartDetail>() : cart.getCartDetails();
+
         double totalPrice = 0;
         for (CartDetail cd : cartDetails) {
             totalPrice += cd.getPrice() * cd.getQuantity();
-
         }
 
-        // truyen qua show
         model.addAttribute("cartDetails", cartDetails);
         model.addAttribute("totalPrice", totalPrice);
 
         return "client/cart/show";
     }
+
+    // @PostMapping("/delete-cart-product/{cartDetail.id}")
+    // public String postDeleteCart(Model model, @ModelAttribute("newUser") User
+    // eric) {
+    // this.userService.deleteUser(eric.getId());
+    // return "redirect:/admin/user";
+    // }
 }
