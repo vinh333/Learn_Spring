@@ -3,7 +3,6 @@ package vn.hoidanit.laptopshop.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.boot.autoconfigure.jms.JmsProperties.Listener.Session;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
@@ -49,10 +48,6 @@ public class ProductService {
         this.productRepository.deleteById(id);
     }
 
-    public Cart fetchCartByUser(User user) {
-        return this.cartRepository.findByUser(user);
-    }
-
     public void handleAddProductToCart(String email, long productId, HttpSession session) {
 
         User user = this.userService.getUserByEmail(email);
@@ -75,7 +70,8 @@ public class ProductService {
             Optional<Product> productOptional = this.productRepository.findById(productId);
             if (productOptional.isPresent()) {
                 Product realProduct = productOptional.get();
-                // check xem san pham da co trong gi hang chua
+
+                // check sản phẩm đã từng được thêm vào giỏ hàng trước đây chưa ?
                 CartDetail oldDetail = this.cartDetailRepository.findByCartAndProduct(cart, realProduct);
                 //
                 if (oldDetail == null) {
@@ -91,11 +87,9 @@ public class ProductService {
                     cart.setSum(s);
                     this.cartRepository.save(cart);
                     session.setAttribute("sum", s);
-
                 } else {
                     oldDetail.setQuantity(oldDetail.getQuantity() + 1);
                     this.cartDetailRepository.save(oldDetail);
-
                 }
 
             }
@@ -127,6 +121,17 @@ public class ProductService {
                 // delete cart (sum = 1)
                 this.cartRepository.deleteById(currentCart.getId());
                 session.setAttribute("sum", 0);
+            }
+        }
+    }
+
+    public void handleUpdateCartBeforeCheckout(List<CartDetail> cartDetails) {
+        for (CartDetail cartDetail : cartDetails) {
+            Optional<CartDetail> cdOptional = this.cartDetailRepository.findById(cartDetail.getId());
+            if (cdOptional.isPresent()) {
+                CartDetail currentCartDetail = cdOptional.get();
+                currentCartDetail.setQuantity(cartDetail.getQuantity());
+                this.cartDetailRepository.save(currentCartDetail);
             }
         }
     }
